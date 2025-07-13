@@ -15,4 +15,11 @@ func main() {
 
 	logger.Info("Hello")
 
+	err := logger.Open()
+	if err != nil {
+		panic(err)
+	}
+	defer logger.Close()
+
+	logger.Info("Hello first log so cool")
 }
