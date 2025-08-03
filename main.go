@@ -2,16 +2,16 @@ package main
 
 import (
 	logging "github.com/AndrewI26/whiz/logger"
+	"github.com/AndrewI26/whiz/router"
+	"github.com/AndrewI26/whiz/server"
 )
 
 func main() {
 	logger := logging.NewLogger(
 		logging.Info,
 		"LOG_",
-		logging.RollingConfig{
-			TimeThreshold: logging.Minutely,
-			SizeThreshold: logging.HalfMB,
-		})
+		logging.OneKB,
+	)
 
 	logger.Info("Hello")
 
@@ -21,5 +21,9 @@ func main() {
 	}
 	defer logger.Close()
 
-	logger.Info("Hello first log so cool")
+	router := router.NewRouter()
+
+	server := server.NewServer(8000)
+	server.AddRouter(router)
+	server.Serve()
 }
