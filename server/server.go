@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	logging "github.com/AndrewI26/whiz/logger"
 	"github.com/AndrewI26/whiz/routing"
 )
 
@@ -14,10 +15,11 @@ type Router interface {
 type Server struct {
 	port    int
 	routers []routing.Router
+	logger  *logging.Logger
 }
 
-func NewServer(port int) *Server {
-	return &Server{port: port}
+func NewServer(logger *logging.Logger, port int) *Server {
+	return &Server{logger: logger, port: port}
 }
 
 func (s *Server) Serve() {
@@ -32,8 +34,22 @@ func (s *Server) Serve() {
 
 			// If we find the route
 			if handler != nil {
-				handler(params)
+				res := handler(params)
+				for key, val := range res.Headers {
+					w.Header().Add(key, val)
+				}
+				w.WriteHeader(res.Status)
+				_, err := w.Write([]byte(res.Data))
+				if err != nil {
+					s.logger.Error(fmt.Sprintf("writing response: %s", err))
+					// Log error
+				}
+			} else {
+				w.WriteHeader(404)
+				msg := "404 Page Not Found"
+				w.Write([]byte(msg))
 			}
+
 		}
 	})
 

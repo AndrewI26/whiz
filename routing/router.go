@@ -3,16 +3,19 @@ package routing
 import (
 	"fmt"
 	"strings"
+
+	logging "github.com/AndrewI26/whiz/logger"
 )
 
 type Handler func(params map[string]string) *Response
 
 type Router struct {
-	Root *RouteNode
+	Root   *RouteNode
+	logger *logging.Logger
 }
 
-func NewRouter() *Router {
-	return &Router{NewRouteNode()}
+func NewRouter(logger *logging.Logger) *Router {
+	return &Router{Root: NewRouteNode(), logger: logger}
 }
 
 // AddRoute inserts a route node into the routes tree.
@@ -74,7 +77,7 @@ func (r *Router) FindRoute(method string, path string) (map[string]string, Handl
 		childNode, ok := currentNode.children[segment]
 		if ok {
 			currentNode = childNode
-		} else if childNode == currentNode.children[":"] {
+		} else if _, ok := currentNode.children[":"]; ok {
 			childNode = currentNode.children[":"]
 			extractedParams = append(extractedParams, segment)
 			currentNode = childNode
@@ -90,6 +93,7 @@ func (r *Router) FindRoute(method string, path string) (map[string]string, Handl
 		params[key] = value
 	}
 
+	r.logger.Info(fmt.Sprintf("%s %s", strings.ToUpper(method), path))
 	return params, currentNode.methodToHandler[method]
 }
 
