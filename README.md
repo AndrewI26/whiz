@@ -102,3 +102,13 @@ And http://localhost:8000/3/Andrew renders:
 <h3>Hello Andrew!<h3>
 <h3>Hello Andrew!<h3>
 ```
+
+## Logging
+
+Every time you hit an endpoint from the server, it will be logged using a custom build Whiz logger. Here is an example of a log file: 
+
+```log
+[2025-08-22T02:01:05Z] INFO .../whiz/logger/logger.go:66 (GET /hellos/3/Andrew)
+[2025-08-22T02:01:06Z] INFO .../whiz/logger/logger.go:66 (GET /hellos/3/Andrew)
+[2025-08-22T02:01:14Z] INFO .../whiz/logger/logger.go:66 (GET /hellos/3/Andrew)
+```
