@@ -31,9 +31,7 @@ func main() {
 
 Now, lets define a route. Whiz supports dynamic routes by using the symbol ":" followed by the variable name
 
-1. Dynamic routing
-
-- Highly abstracted response model, making it easy for beginners to get into backend
+**_NOTE: Whiz handlers return a highly abstracted response model, making it easy for beginners to get into backend!_**
 
 ```go
 func main() {
